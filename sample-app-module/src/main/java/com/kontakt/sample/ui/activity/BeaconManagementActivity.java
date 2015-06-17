@@ -34,7 +34,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class BeaconManagementActivity extends BaseActivity {
+public class BeaconManagementActivity extends BaseActivity implements IBeaconConnection.ConnectionListener {
 
     public static final String EXTRA_BEACON_DEVICE = "extra_beacon_device";
 
@@ -110,7 +110,7 @@ public class BeaconManagementActivity extends BaseActivity {
         beacon = getIntent().getParcelableExtra(EXTRA_BEACON_DEVICE);
         setUpActionBarTitle(String.format("%s (%s)", beacon.getName(), beacon.getAddress()));
 
-        beaconConnection = IBeaconConnection.newInstance(this, beacon, createConnectionListener());
+        beaconConnection = new IBeaconConnection(this, beacon, this);
     }
 
     @Override
@@ -160,6 +160,101 @@ public class BeaconManagementActivity extends BaseActivity {
         super.onBackPressed();
     }
 
+    @Override
+    public void onConnected() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(BeaconManagementActivity.this, "Connected", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void onAuthenticationSuccess(final IBeaconDevice.Characteristics characteristics) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(BeaconManagementActivity.this, "Authentication Success", Toast.LENGTH_SHORT).show();
+                fillEntries(characteristics);
+                setBeaconFormVisible(true);
+            }
+        });
+    }
+
+    @Override
+    public void onAuthenticationFailure(final int failureCode) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                final Intent intent = getIntent();
+                switch (failureCode) {
+                    case IBeaconConnection.FAILURE_UNKNOWN_BEACON:
+                        intent.putExtra(EXTRA_FAILURE_MESSAGE, String.format("Unknown beacon: %s", beacon.getName()));
+                        break;
+                    case IBeaconConnection.FAILURE_WRONG_PASSWORD:
+                        intent.putExtra(EXTRA_FAILURE_MESSAGE, String.format("Wrong password. Beacon will be disabled for about 20 mins."));
+                        break;
+                    default:
+                        throw new IllegalArgumentException(String.format("Unknown beacon connection failure code: %d", failureCode));
+                }
+                setResult(RESULT_CANCELED, intent);
+                finish();
+            }
+        });
+    }
+
+    @Override
+    public void onCharacteristicsUpdated(final IBeaconDevice.Characteristics characteristics) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                fillEntries(characteristics);
+            }
+        });
+    }
+
+    @Override
+    public void onErrorOccured(final int errorCode) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                switch(errorCode) {
+
+                    case IBeaconConnection.ERROR_OVERWRITE_REQUEST:
+                        Toast.makeText(BeaconManagementActivity.this, "Overwrite request error", Toast.LENGTH_SHORT).show();
+                        break;
+
+                    case IBeaconConnection.ERROR_SERVICES_DISCOVERY:
+                        Toast.makeText(BeaconManagementActivity.this, "Services discovery error", Toast.LENGTH_SHORT).show();
+                        break;
+
+                    case IBeaconConnection.ERROR_AUTHENTICATION:
+                        Toast.makeText(BeaconManagementActivity.this, "Authentication error", Toast.LENGTH_SHORT).show();
+                        break;
+
+                    case IBeaconConnection.ERROR_CHARACTERISTIC_READING:
+                        Toast.makeText(BeaconManagementActivity.this, "Characteristic reading error", Toast.LENGTH_SHORT).show();
+                        break;
+
+                    default:
+                        throw new IllegalStateException("Unexpected connection error occured: " + errorCode);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onDisconnected() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(BeaconManagementActivity.this, "Disconnected", Toast.LENGTH_SHORT).show();
+                setBeaconFormVisible(false);
+            }
+        });
+    }
+
     private void onConfigResultDelivered(final int resultCode, final Intent data) {
         if(resultCode != RESULT_CANCELED) {
             final Config config = data.getParcelableExtra(ConfigFormActivity.EXTRA_RESULT_CONFIG);
@@ -172,105 +267,6 @@ public class BeaconManagementActivity extends BaseActivity {
             final Profile profile = data.getParcelableExtra(ProfilesActivity.EXTRA_PROFILE);
             onAcceptProfile(profile);
         }
-    }
-
-    private IBeaconConnection.ConnectionListener createConnectionListener() {
-        return new IBeaconConnection.ConnectionListener() {
-            @Override
-            public void onConnected() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(BeaconManagementActivity.this, "Connected", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onAuthenticationSuccess(final IBeaconDevice.Characteristics characteristics) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(BeaconManagementActivity.this, "Authentication Success", Toast.LENGTH_SHORT).show();
-                        fillEntries(characteristics);
-                        setBeaconFormVisible(true);
-                    }
-                });
-            }
-
-            @Override
-            public void onAuthenticationFailure(final int failureCode) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        final Intent intent = getIntent();
-                        switch(failureCode) {
-                            case IBeaconConnection.FAILURE_UNKNOWN_BEACON:
-                                intent.putExtra(EXTRA_FAILURE_MESSAGE, String.format("Unknown beacon: %s", beacon.getName()));
-                                break;
-                            case IBeaconConnection.FAILURE_WRONG_PASSWORD:
-                                intent.putExtra(EXTRA_FAILURE_MESSAGE, String.format("Wrong password. Beacon will be disabled for about 20 mins."));
-                                break;
-                            default:
-                                throw new IllegalArgumentException(String.format("Unknown beacon connection failure code: %d", failureCode));
-                        }
-                        setResult(RESULT_CANCELED, intent);
-                        finish();
-                    }
-                });
-            }
-
-            @Override
-            public void onCharacteristicsUpdated(final IBeaconDevice.Characteristics characteristics) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        fillEntries(characteristics);
-                    }
-                });
-            }
-
-            @Override
-            public void onErrorOccured(final int errorCode) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        switch(errorCode) {
-
-                            case IBeaconConnection.ERROR_OVERWRITE_REQUEST:
-                                Toast.makeText(BeaconManagementActivity.this, "Overwrite request error", Toast.LENGTH_SHORT).show();
-                                break;
-
-                            case IBeaconConnection.ERROR_SERVICES_DISCOVERY:
-                                Toast.makeText(BeaconManagementActivity.this, "Services discovery error", Toast.LENGTH_SHORT).show();
-                                break;
-
-                            case IBeaconConnection.ERROR_AUTHENTICATION:
-                                Toast.makeText(BeaconManagementActivity.this, "Authentication error", Toast.LENGTH_SHORT).show();
-                                break;
-
-                            case IBeaconConnection.ERROR_CHARACTERISTIC_READING:
-                                Toast.makeText(BeaconManagementActivity.this, "Characteristic reading error", Toast.LENGTH_SHORT).show();
-                                break;
-
-                            default:
-                                throw new IllegalStateException("Unexpected connection error occured: " + errorCode);
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void onDisconnected() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(BeaconManagementActivity.this, "Disconnected", Toast.LENGTH_SHORT).show();
-                        setBeaconFormVisible(false);
-                    }
-                });
-            }
-        };
     }
 
     private void fillEntries(IBeaconDevice.Characteristics characteristics) {
