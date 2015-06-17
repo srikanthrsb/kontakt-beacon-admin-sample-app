@@ -165,7 +165,7 @@ public class BeaconManagementActivity extends BaseActivity implements IBeaconCon
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(BeaconManagementActivity.this, "Connected", Toast.LENGTH_SHORT).show();
+                Utils.showToast(BeaconManagementActivity.this, "Connected");
             }
         });
     }
@@ -175,7 +175,7 @@ public class BeaconManagementActivity extends BaseActivity implements IBeaconCon
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(BeaconManagementActivity.this, "Authentication Success", Toast.LENGTH_SHORT).show();
+                Utils.showToast(BeaconManagementActivity.this, "Authentication Success");
                 fillEntries(characteristics);
                 setBeaconFormVisible(true);
             }
@@ -222,19 +222,15 @@ public class BeaconManagementActivity extends BaseActivity implements IBeaconCon
                 switch(errorCode) {
 
                     case IBeaconConnection.ERROR_OVERWRITE_REQUEST:
-                        Toast.makeText(BeaconManagementActivity.this, "Overwrite request error", Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this, "Overwrite request error");
                         break;
 
                     case IBeaconConnection.ERROR_SERVICES_DISCOVERY:
-                        Toast.makeText(BeaconManagementActivity.this, "Services discovery error", Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this, "Services discovery error");
                         break;
 
                     case IBeaconConnection.ERROR_AUTHENTICATION:
-                        Toast.makeText(BeaconManagementActivity.this, "Authentication error", Toast.LENGTH_SHORT).show();
-                        break;
-
-                    case IBeaconConnection.ERROR_CHARACTERISTIC_READING:
-                        Toast.makeText(BeaconManagementActivity.this, "Characteristic reading error", Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this, "Authentication error");
                         break;
 
                     default:
@@ -249,7 +245,7 @@ public class BeaconManagementActivity extends BaseActivity implements IBeaconCon
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(BeaconManagementActivity.this, "Disconnected", Toast.LENGTH_SHORT).show();
+                Utils.showToast(BeaconManagementActivity.this, "Disconnected");
                 setBeaconFormVisible(false);
             }
         });
@@ -528,33 +524,33 @@ public class BeaconManagementActivity extends BaseActivity implements IBeaconCon
 
                 switch(errorCode) {
                     case IBeaconConnection.ERROR_BATCH_WRITE_TX_POWER:
-                        Toast.makeText(BeaconManagementActivity.this,
-                                "Error during Batch write operation - could not write Tx Power",
-                                Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this,
+                                "Error during Batch write operation - could not write Tx Power");
                         break;
                     case IBeaconConnection.ERROR_BATCH_WRITE_INTERVAL:
-                        Toast.makeText(BeaconManagementActivity.this,
-                                "Error during Batch write operation - could not write Interval",
-                                Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this,
+                                "Error during Batch write operation - could not write Interval");
                         break;
                     case IBeaconConnection.ERROR_BATCH_WRITE_MAJOR:
-                        Toast.makeText(BeaconManagementActivity.this,
-                                "Error during Batch write operation - could not write Major value",
-                                Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this,
+                                "Error during Batch write operation - could not write Major value");
                         break;
                     case IBeaconConnection.ERROR_BATCH_WRITE_MINOR:
-                        Toast.makeText(BeaconManagementActivity.this,
-                                "Error during Batch write operation - could not write Minor value",
-                                Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this,
+                                "Error during Batch write operation - could not write Minor value");
                         break;
                     case IBeaconConnection.ERROR_BATCH_WRITE_PROXIMITY_UUID:
-                        Toast.makeText(BeaconManagementActivity.this,
-                                "Error during Batch write operation - could not write Proximity UUID",
-                                Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this,
+                                "Error during Batch write operation - could not write Proximity UUID");
                         break;
                     default:
                         throw new IllegalArgumentException("Unknown error code: " + errorCode);
                 }
+            }
+
+            @Override
+            public void onWriteFailure() {
+
             }
         });
     }
@@ -579,23 +575,30 @@ public class BeaconManagementActivity extends BaseActivity implements IBeaconCon
 
                 switch(errorCode) {
                     case IBeaconConnection.ERROR_BATCH_WRITE_TX_POWER:
-                        Toast.makeText(BeaconManagementActivity.this,
-                                "Error during Batch write operation - could not write Tx Power",
-                                Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this,
+                                "Error during Batch write operation - could not write Tx Power");
                         break;
                     case IBeaconConnection.ERROR_BATCH_WRITE_INTERVAL:
-                        Toast.makeText(BeaconManagementActivity.this,
-                                "Error during Batch write operation - could not write Interval",
-                                Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this,
+                                "Error during Batch write operation - could not write Interval");
                         break;
                     case IBeaconConnection.ERROR_BATCH_WRITE_PROXIMITY_UUID:
-                        Toast.makeText(BeaconManagementActivity.this,
-                                "Error during Batch write operation - could not write Proximity UUID",
-                                Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this,
+                                "Error during Batch write operation - could not write Proximity UUID");
                         break;
                     default:
                         throw new IllegalArgumentException("Unknown error code: " + errorCode);
                 }
+            }
+
+            @Override
+            public void onWriteFailure() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Utils.showToast(BeaconManagementActivity.this, "Profile writing failed");
+                    }
+                });
             }
         });
     }
@@ -607,7 +610,7 @@ public class BeaconManagementActivity extends BaseActivity implements IBeaconCon
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(BeaconManagementActivity.this, "Device restored to default settings", Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this, "Device restored to default settings");
                     }
                 });
             }
@@ -617,7 +620,7 @@ public class BeaconManagementActivity extends BaseActivity implements IBeaconCon
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(BeaconManagementActivity.this, "Device could not be restored to default settings", Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this, "Device could not be restored to default settings");
                     }
                 });
 
@@ -632,7 +635,7 @@ public class BeaconManagementActivity extends BaseActivity implements IBeaconCon
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(BeaconManagementActivity.this, "Device reset successfully", Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this, "Device reset successfully");
                         beaconConnection.connect();
                     }
                 });
@@ -643,7 +646,7 @@ public class BeaconManagementActivity extends BaseActivity implements IBeaconCon
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(BeaconManagementActivity.this, "Device reset error", Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this, "Device reset error");
                     }
                 });
             }
@@ -657,7 +660,7 @@ public class BeaconManagementActivity extends BaseActivity implements IBeaconCon
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(BeaconManagementActivity.this, "Model name written successfully", Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this, "Model name written successfully");
                     }
                 });
             }
@@ -667,7 +670,7 @@ public class BeaconManagementActivity extends BaseActivity implements IBeaconCon
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(BeaconManagementActivity.this, "Model name overwrite failure", Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this, "Model name overwrite failure");
                     }
                 });
             }
@@ -681,7 +684,7 @@ public class BeaconManagementActivity extends BaseActivity implements IBeaconCon
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(BeaconManagementActivity.this, "Password written successfully", Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this, "Password written successfully");
                     }
                 });
             }
@@ -691,7 +694,7 @@ public class BeaconManagementActivity extends BaseActivity implements IBeaconCon
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(BeaconManagementActivity.this, "Advertising Interval write failure", Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this, "Advertising Interval write failure");
                     }
                 });
             }
@@ -705,7 +708,7 @@ public class BeaconManagementActivity extends BaseActivity implements IBeaconCon
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(BeaconManagementActivity.this, "Advertising Interval written successfully", Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this, "Advertising Interval written successfully");
                     }
                 });
             }
@@ -715,7 +718,7 @@ public class BeaconManagementActivity extends BaseActivity implements IBeaconCon
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(BeaconManagementActivity.this, "Advertising Interval overwrite failure", Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this, "Advertising Interval overwrite failure");
                     }
                 });
             }
@@ -729,7 +732,7 @@ public class BeaconManagementActivity extends BaseActivity implements IBeaconCon
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(BeaconManagementActivity.this, "Power level written successfully", Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this, "Power level written successfully");
                     }
                 });
             }
@@ -739,7 +742,7 @@ public class BeaconManagementActivity extends BaseActivity implements IBeaconCon
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(BeaconManagementActivity.this, "Power level overwrite failure", Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this, "Power level overwrite failure");
                     }
                 });
             }
@@ -753,7 +756,7 @@ public class BeaconManagementActivity extends BaseActivity implements IBeaconCon
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(BeaconManagementActivity.this, "Minor overwritten successfully", Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this, "Minor overwritten successfully");
                     }
                 });
             }
@@ -763,7 +766,7 @@ public class BeaconManagementActivity extends BaseActivity implements IBeaconCon
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(BeaconManagementActivity.this, "Minor overwrite failure", Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this, "Minor overwrite failure");
                     }
                 });
             }
@@ -777,7 +780,7 @@ public class BeaconManagementActivity extends BaseActivity implements IBeaconCon
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(BeaconManagementActivity.this, "Major overwritten successfully", Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this, "Major overwritten successfully");
                     }
                 });
             }
@@ -787,7 +790,7 @@ public class BeaconManagementActivity extends BaseActivity implements IBeaconCon
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(BeaconManagementActivity.this, "Minor overwrite failure", Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this, "Minor overwrite failure");
                     }
                 });
             }
@@ -801,7 +804,7 @@ public class BeaconManagementActivity extends BaseActivity implements IBeaconCon
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(BeaconManagementActivity.this, "Proximity UUID overwritten successfully", Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this, "Proximity UUID overwritten successfully");
                     }
                 });
             }
@@ -811,7 +814,7 @@ public class BeaconManagementActivity extends BaseActivity implements IBeaconCon
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(BeaconManagementActivity.this, "Minor overwrite failure", Toast.LENGTH_SHORT).show();
+                        Utils.showToast(BeaconManagementActivity.this, "Minor overwrite failure");
                     }
                 });
             }
