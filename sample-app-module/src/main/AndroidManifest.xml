@@ -32,6 +32,7 @@
         <activity android:name=".ui.activity.BackgroundScanActivity" />
         <activity android:name=".ui.activity.ProfilesActivity" />
         <activity android:name=".ui.activity.ConfigFormActivity" />
+        <activity android:name=".ui.activity.SimultaneousScanActivity" />
 
         <service
             android:name=".service.BackgroundScanService"
