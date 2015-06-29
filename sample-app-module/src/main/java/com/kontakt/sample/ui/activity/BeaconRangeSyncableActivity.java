@@ -17,7 +17,8 @@ import com.kontakt.sdk.android.ble.rssi.RssiCalculators;
 import com.kontakt.sdk.android.common.ibeacon.IBeaconDevice;
 import com.kontakt.sdk.android.common.interfaces.SDKBiConsumer;
 
-public class BeaconRangeActivity extends BaseBeaconRangeActivity {
+public class BeaconRangeSyncableActivity extends BaseBeaconRangeActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +56,7 @@ public class BeaconRangeActivity extends BaseBeaconRangeActivity {
 
                             beacon.setPassword(password.getBytes());
 
-                            final Intent intent = new Intent(BeaconRangeActivity.this, BeaconManagementActivity.class);
+                            final Intent intent = new Intent(BeaconRangeSyncableActivity.this, SyncableBeaconManagementActivity.class);
                             intent.putExtra(BeaconManagementActivity.EXTRA_BEACON_DEVICE, beacon);
 
                             startActivityForResult(intent, REQUEST_CODE_CONNECT_TO_DEVICE);

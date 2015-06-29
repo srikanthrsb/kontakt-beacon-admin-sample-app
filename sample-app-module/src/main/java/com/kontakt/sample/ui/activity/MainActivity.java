@@ -61,6 +61,11 @@ public class MainActivity extends BaseActivity {
         startActivity(new Intent(MainActivity.this, SimultaneousScanActivity.class));
     }
 
+    @OnClick(R.id.syncable_connection)
+    void startRangeWithSyncableConnection(){
+        startActivity(new Intent(MainActivity.this, BeaconRangeSyncableActivity.class));
+    }
+
     @OnClick(R.id.background_scan)
     void startForegroundBackgroundScan() {
 
