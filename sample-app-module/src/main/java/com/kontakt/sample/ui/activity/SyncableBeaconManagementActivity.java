@@ -330,7 +330,8 @@ public class SyncableBeaconManagementActivity extends BaseActivity implements IB
     }
 
     private void clearConnection() {
-        //todo
+        syncableIBeaconConnection.close();
+        syncableIBeaconConnection = null;
     }
 
     @OnClick(R.id.proximity_uuid)
@@ -506,7 +507,33 @@ public class SyncableBeaconManagementActivity extends BaseActivity implements IB
     }
 
     private void onApplyConfig(final Config config) {
-        //todo:
+        syncableIBeaconConnection.applyConfig(config, new SyncableIBeaconConnection.SyncWriteBatchListener<Config>() {
+            @Override
+            public void onSyncWriteBatchStart(Config batchHolder) {
+                showToast("write config batch start");
+            }
+
+            @Override
+            public void onWriteFailed() {
+                showToast("write config failed");
+            }
+
+            @Override
+            public void onBatchWriteError(int errorCode) {
+                showToast("config batch write error " + errorCode);
+            }
+
+            @Override
+            public void onSyncFailed(ClientException e) {
+                showToast("sync config failed");
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onSuccess(Config batchHolder) {
+                showToast("config write and sync succeed");
+            }
+        });
     }
 
     private void onAcceptProfile(final Profile profile) {
@@ -534,17 +561,17 @@ public class SyncableBeaconManagementActivity extends BaseActivity implements IB
     }
 
     private void onResetDevice() {
-       syncableIBeaconConnection.resetDevice(new IBeaconConnection.WriteListener() {
-           @Override
-           public void onWriteSuccess() {
-               showToast("Device reset success");
-           }
+        syncableIBeaconConnection.resetDevice(new IBeaconConnection.WriteListener() {
+            @Override
+            public void onWriteSuccess() {
+                showToast("Device reset success");
+            }
 
-           @Override
-           public void onWriteFailure() {
-               showToast("Device reset failure");
-           }
-       });
+            @Override
+            public void onWriteFailure() {
+                showToast("Device reset failure");
+            }
+        });
     }
 
     private void onOverwriteModelName(String result) {
@@ -568,23 +595,23 @@ public class SyncableBeaconManagementActivity extends BaseActivity implements IB
     }
 
     private void onOverwritePassword(String result) {
-       syncableIBeaconConnection.overwritePassword(result, new SyncableIBeaconConnection.SyncWriteListener() {
-           @Override
-           public void onWriteFailed() {
-               showToast("Overwrite password failed");
-           }
+        syncableIBeaconConnection.overwritePassword(result, new SyncableIBeaconConnection.SyncWriteListener() {
+            @Override
+            public void onWriteFailed() {
+                showToast("Overwrite password failed");
+            }
 
-           @Override
-           public void onSyncFailed(ClientException e) {
-               e.printStackTrace();
-               showToast("Beacon updated but sync failed");
-           }
+            @Override
+            public void onSyncFailed(ClientException e) {
+                e.printStackTrace();
+                showToast("Beacon updated but sync failed");
+            }
 
-           @Override
-           public void onSuccess() {
-               showToast("Overwrite password succeed");
-           }
-       });
+            @Override
+            public void onSuccess() {
+                showToast("Overwrite password succeed");
+            }
+        });
     }
 
     private void onOverwriteAdvertisingInterval(long value) {
@@ -667,23 +694,23 @@ public class SyncableBeaconManagementActivity extends BaseActivity implements IB
     }
 
     private void onOverwriteProximityUUID(UUID uuid) {
-       syncableIBeaconConnection.overwriteProximityUUID(uuid, new SyncableIBeaconConnection.SyncWriteListener() {
-           @Override
-           public void onWriteFailed() {
-               showToast("Overwrite proximity failed");
-           }
+        syncableIBeaconConnection.overwriteProximityUUID(uuid, new SyncableIBeaconConnection.SyncWriteListener() {
+            @Override
+            public void onWriteFailed() {
+                showToast("Overwrite proximity failed");
+            }
 
-           @Override
-           public void onSyncFailed(ClientException e) {
-               e.printStackTrace();
-               showToast("Beacon updated but sync failed");
-           }
+            @Override
+            public void onSyncFailed(ClientException e) {
+                e.printStackTrace();
+                showToast("Beacon updated but sync failed");
+            }
 
-           @Override
-           public void onSuccess() {
-               showToast("Overwrite proximity succeed");
-           }
-       });
+            @Override
+            public void onSuccess() {
+                showToast("Overwrite proximity succeed");
+            }
+        });
     }
 
     private void showToast(final String message) {
