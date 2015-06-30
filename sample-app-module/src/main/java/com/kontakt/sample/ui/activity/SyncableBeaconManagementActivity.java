@@ -541,23 +541,7 @@ public class SyncableBeaconManagementActivity extends BaseActivity implements IB
     }
 
     private void onRestoreDefaultSettings(final String masterPassword) {
-        syncableIBeaconConnection.restoreDefaultSettings(masterPassword, new SyncableIBeaconConnection.SyncWriteListener() {
-            @Override
-            public void onWriteFailed() {
-                showToast("Device restore failed");
-            }
 
-            @Override
-            public void onSyncFailed(ClientException e) {
-                e.printStackTrace();
-                showToast("Beacon updated but sync failed");
-            }
-
-            @Override
-            public void onSuccess() {
-                showToast("Device restore success");
-            }
-        });
     }
 
     private void onResetDevice() {
