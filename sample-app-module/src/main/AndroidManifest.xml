@@ -33,7 +33,7 @@
         <activity android:name=".ui.activity.ProfilesActivity" />
         <activity android:name=".ui.activity.ConfigFormActivity" />
         <activity android:name=".ui.activity.SimultaneousScanActivity" />
-        <activity android:name=".ui.activity.BeaconRangeSyncableActivity" />
+        <activity android:name=".ui.activity.BeaconRangeSyncableActivity"/>
         <activity android:name=".ui.activity.SyncableBeaconManagementActivity"/>
 
         <service

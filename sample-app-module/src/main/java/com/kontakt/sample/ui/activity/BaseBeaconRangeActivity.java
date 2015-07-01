@@ -95,13 +95,6 @@ public abstract class BaseBeaconRangeActivity extends BaseActivity implements Pr
     }
 
     @Override
-    public void onTrimMemory(int level) {
-        if (level == TRIM_MEMORY_UI_HIDDEN) {
-            deviceManager.detachListener(this);
-        }
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         deviceManager.disconnect();

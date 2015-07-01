@@ -22,24 +22,6 @@ public class BeaconRangeActivity extends BaseBeaconRangeActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        createNewScanContext();
-    }
-
-    //todo: remove
-    private void createNewScanContext() {
-        scanContext = new ScanContext.Builder()
-                .setScanMode(ProximityManager.SCAN_MODE_BALANCED)
-                .setRssiCalculator(RssiCalculators.newLimitedMeanRssiCalculator(5))
-                .setBeaconActivityCheckConfiguration(BeaconActivityCheckConfiguration.DEFAULT)
-                .setForceScanConfiguration(ForceScanConfiguration.DEFAULT)
-                .setScanPeriod(new ScanPeriod(15000, 5000))
-                .addIBeaconFilter(new CustomFilter() {
-                    @Override
-                    public boolean apply(IBeaconAdvertisingPacket iBeaconAdvertisingPacket) {
-                        return iBeaconAdvertisingPacket.getBeaconUniqueId().equals("aMUi");
-                    }
-                })
-                .build();
     }
 
     @Override

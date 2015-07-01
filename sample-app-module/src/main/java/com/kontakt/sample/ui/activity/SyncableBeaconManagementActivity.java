@@ -94,8 +94,6 @@ public class SyncableBeaconManagementActivity extends BaseActivity implements IB
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
 
-    private ProgressDialog progressDialog;
-
     private int animationDuration;
 
     private SyncableIBeaconConnection syncableIBeaconConnection;
@@ -113,7 +111,7 @@ public class SyncableBeaconManagementActivity extends BaseActivity implements IB
         beacon = getIntent().getParcelableExtra(EXTRA_BEACON_DEVICE);
         setUpActionBarTitle(String.format("%s (%s)", beacon.getName(), beacon.getAddress()));
 
-        syncableIBeaconConnection = new SyncableIBeaconConnection(this, beacon, this, IDevice.DeviceType.BEACON);
+        syncableIBeaconConnection = new SyncableIBeaconConnection(this, beacon, this);
     }
 
 
