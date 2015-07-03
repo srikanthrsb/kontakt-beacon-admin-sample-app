@@ -9,6 +9,8 @@ import butterknife.ButterKnife;
 
 public class App extends Application {
 
+    //Launch App
+
     @Override
     public void onCreate() {
         super.onCreate();
